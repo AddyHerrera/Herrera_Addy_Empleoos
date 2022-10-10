@@ -9,15 +9,27 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.itinajero.model.Perfil;
+import net.itinajero.model.Usuario;
 import net.itinajero.model.Vacante;
+import net.itinajero.service.ICategoriasService;
+import net.itinajero.service.IUsuariosService;
 import net.itinajero.service.IVacantesService;
 
 @Controller
 public class HomeController {
 	
 	@Autowired
+	private ICategoriasService serviceCategorias;
+	
+	@Autowired
 	private IVacantesService serviceVacantes;
+	
+	@Autowired
+    private IUsuariosService serviceUsuarios;
 	
 	@GetMapping("/tabla")
 	public String mostrarTabla(Model model) {
@@ -55,10 +67,40 @@ public class HomeController {
 	public String mostrarHome(Model model) {
 		return "home";
 	}
+	@GetMapping("/signup")
+	public String registrarse(Usuario usuario,Model model) {
+		return "formRegistro";
+	}
+	
+	@PostMapping("/signup")
+	public String guardarRegistro(Usuario usuario, RedirectAttributes attributes) {
+		 //Ejercicio.
+		 usuario.setEstatus(1);
+		 usuario.setFechaRegistro(new Date());
+		 
+		 Perfil perfil = new Perfil();
+		 perfil.setId(3);
+		 usuario.agregar(perfil);
+		 
+		serviceUsuarios.guardar(usuario);
+		attributes.addFlashAttribute("msg", "El registrado fue guardado exitosamente");		
+		
+		return "redirect:/usuarios/index";
+	}
+	
+	@GetMapping("/search")
+	public String buscar(@ModelAttribute("search") Vacante vacante) {
+		System.out.println("Buscando por : " + vacante);
+		return "home";
+	}
 	
 	@ModelAttribute
 	public void setGenericos(Model model) {
+		Vacante vacanteSearch = new Vacante();
+		vacanteSearch.reset();
 		model.addAttribute("vacantes", serviceVacantes.buscarDestacadas());
+		model.addAttribute("categorias", serviceCategorias.buscarTodas());
+		model.addAttribute("search", vacanteSearch);
 	}
 	
 }
