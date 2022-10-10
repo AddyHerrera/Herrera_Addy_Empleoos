@@ -36,6 +36,27 @@ public class HomeController {
 	@Autowired
     private IUsuariosService serviceUsuarios;
 	
+	@GetMapping("/signup")
+	public String registrarse(Usuario usuario,Model model) {
+		return "usuarios/formRegistro";
+	}
+	
+	@PostMapping("/signup")
+	public String guardarRegistro(Usuario usuario, RedirectAttributes attributes) {
+		 //Ejercicio.
+		 usuario.setEstatus(1);
+		 usuario.setFechaRegistro(new Date());
+		 
+		 Perfil perfil = new Perfil();
+		 perfil.setId(3);
+		 usuario.agregar(perfil);
+		 
+		serviceUsuarios.guardar(usuario);
+		attributes.addFlashAttribute("msg", "El registrado fue guardado exitosamente");		
+		
+		return "redirect:/usuarios/index";
+	}
+	
 	@GetMapping("/tabla")
 	public String mostrarTabla(Model model) {
 		List<Vacante> lista = serviceVacantes.buscarTodas();
@@ -72,26 +93,7 @@ public class HomeController {
 	public String mostrarHome(Model model) {
 		return "home";
 	}
-	@GetMapping("/signup")
-	public String registrarse(Usuario usuario,Model model) {
-		return "formRegistro";
-	}
 	
-	@PostMapping("/signup")
-	public String guardarRegistro(Usuario usuario, RedirectAttributes attributes) {
-		 //Ejercicio.
-		 usuario.setEstatus(1);
-		 usuario.setFechaRegistro(new Date());
-		 
-		 Perfil perfil = new Perfil();
-		 perfil.setId(3);
-		 usuario.agregar(perfil);
-		 
-		serviceUsuarios.guardar(usuario);
-		attributes.addFlashAttribute("msg", "El registrado fue guardado exitosamente");		
-		
-		return "redirect:/usuarios/index";
-	}
 	
 	@GetMapping("/search")
 	public String buscar(@ModelAttribute("search") Vacante vacante, Model model) {

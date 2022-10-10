@@ -40,13 +40,13 @@
                 </tr>
               </thead>
               <tbody>
-                <tr  th:each="usuario : ${usuarios}">
-                  <td th:text="${usuario.nombre}"></td>
-                  <td th:text="${usuario.username}"></td>                  
-                  <td th:text="${usuario.email}"></td>
-                  <td th:text="${usuario.estatus}"></td>
+                <tr  th:each="usuarios : ${usuarios}">
+                  <td th:text="${usuarios.nombre}"></td>
+                  <td th:text="${usuarios.username}"></td>                  
+                  <td th:text="${usuarios.email}"></td>
+                  <td th:text="${usuarios.estatus==1 ? 'Activo' : 'No activo' }"></td>
                   <td>
-                    <a th:href="@{/usuarios/delete/{id} (id=${usuario.id}) }" onclick="confirm('¿Estas seguro?')" class="btn btn-success btn-sm" role="button" title="Eliminar"><i class="fas fa-trash" aria-hidden="true"></i></a>
+                    <a th:href="@{/usuarios/delete/{id} (id=${usuarios.id}) }" onclick="confirm('¿Estas seguro?')" class="btn btn-success btn-sm" role="button" title="Eliminar"><i class="fas fa-trash" aria-hidden="true"></i></a>
                     <span> 
                       <a href="/usuarios/lock/3" onclick="confirm('¿Quiere bloquear el acceso al usuario?')" class="btn btn-success btn-sm" role="button" title="Bloquear el acceso al sistema para este usuario."><i class="fas fa-lock" aria-hidden="true"></i></a>
 					</span>
